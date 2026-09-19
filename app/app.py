@@ -24,12 +24,6 @@ with st.sidebar:
     channels = st.multiselect("Channel", sorted(df["Channel"].unique()), default=list(sorted(df["Channel"].unique())))
     products = st.multiselect("Product", sorted(df["Product"].unique()), default=list(sorted(df["Product"].unique())))
 
-    st.divider()
-    split_by_lane = st.checkbox(
-        "Show one line per lane (instead of summing the selection)",
-        value=len(states) * len(channels) * len(products) <= 8 if states else False,
-    )
-
 if not states or not channels or not products:
     st.warning("Select at least one State, Channel, and Product in the sidebar.")
     st.stop()
@@ -44,40 +38,23 @@ st.subheader(f"{len(states)} state(s) × {len(channels)} channel(s) × {len(prod
 
 fig = go.Figure()
 
-if split_by_lane:
-    lanes = sorted(filtered["Lane"].unique())
-    for i, lane in enumerate(lanes):
-        color = PALETTE[i % len(PALETTE)]
-        lane_df = filtered[filtered["Lane"] == lane].sort_values("Date")
-        for data_type in ["Historical", "Forecast"]:
-            seg = lane_df[lane_df["Data Type"] == data_type]
-            if seg.empty:
-                continue
-            fig.add_trace(
-                go.Scatter(
-                    x=seg["Date"],
-                    y=seg["Volume"],
-                    mode="lines",
-                    name=f"{lane} ({data_type})",
-                    legendgroup=lane,
-                    line=dict(color=color, dash=DASH[data_type]),
-                    hovertemplate="%{x|%b %Y}<br>%{y:,.0f}<extra>" + f"{lane} — {data_type}" + "</extra>",
-                )
-            )
-else:
-    agg = filtered.groupby(["Date", "Data Type"], as_index=False)["Volume"].sum()
-    for i, data_type in enumerate(["Historical", "Forecast"]):
-        seg = agg[agg["Data Type"] == data_type].sort_values("Date")
+lanes = sorted(filtered["Lane"].unique())
+for i, lane in enumerate(lanes):
+    color = PALETTE[i % len(PALETTE)]
+    lane_df = filtered[filtered["Lane"] == lane].sort_values("Date")
+    for data_type in ["Historical", "Forecast"]:
+        seg = lane_df[lane_df["Data Type"] == data_type]
         if seg.empty:
             continue
         fig.add_trace(
             go.Scatter(
                 x=seg["Date"],
                 y=seg["Volume"],
-                mode="lines+markers",
-                name=data_type,
-                line=dict(color=PALETTE[i], dash=DASH[data_type], width=3),
-                hovertemplate="%{x|%b %Y}<br>%{y:,.0f}<extra>" + data_type + "</extra>",
+                mode="lines",
+                name=f"{lane} ({data_type})",
+                legendgroup=lane,
+                line=dict(color=color, dash=DASH[data_type]),
+                hovertemplate="%{x|%b %Y}<br>%{y:,.0f}<extra>" + f"{lane} — {data_type}" + "</extra>",
             )
         )
 
