@@ -1,30 +1,21 @@
 """Streamlit app: non-new origination historical vs. forecast, by lane (State + Channel + Product)."""
 
-from pathlib import Path
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "combined_non_new_actuals_and_forecast.csv"
+from lib import DASH, PALETTE, load_data
 
 st.set_page_config(page_title="Non-New Origination Forecast", layout="wide")
 
+df = st.cache_data(load_data)()
 
-@st.cache_data
-def load_data() -> pd.DataFrame:
-    df = pd.read_csv(DATA_PATH, parse_dates=["Date"])
-    df["Lane"] = df["State"] + " / " + df["Channel"] + " / " + df["Product"]
-    return df
-
-
-df = load_data()
-
-st.title("Non-New Origination — Historical vs. Forecast")
+st.title("Non-New Origination — Overview")
 st.caption(
     "Each lane is one State + Channel + Product combination. "
     "Historical actuals run Jan 2022 – Jun 2026; forecast runs Sep 2026 – Dec 2027. "
-    "Jul–Aug 2026 have no data in either series (known gap, see PROJECT_UNDERSTANDING.md)."
+    "Jul–Aug 2026 have no data in either series (known gap, see PROJECT_UNDERSTANDING.md). "
+    "For a single-lane view matching the workbook's own Lane Chart sheet, use the **Lane Chart** page in the sidebar."
 )
 
 with st.sidebar:
@@ -52,12 +43,6 @@ if filtered.empty:
 st.subheader(f"{len(states)} state(s) × {len(channels)} channel(s) × {len(products)} product(s)")
 
 fig = go.Figure()
-
-DASH = {"Historical": "solid", "Forecast": "dash"}
-PALETTE = [
-    "#4C78A8", "#F58518", "#54A24B", "#E45756", "#72B7B2",
-    "#B279A2", "#FF9DA6", "#9D755D", "#BAB0AC", "#EECA3B",
-]
 
 if split_by_lane:
     lanes = sorted(filtered["Lane"].unique())
