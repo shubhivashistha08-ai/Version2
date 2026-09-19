@@ -39,9 +39,9 @@ products = sorted(df["Product"].unique())
 
 with st.sidebar:
     st.header("Lane")
-    state = st.selectbox("State", states, index=states.index("CA") if "CA" in states else 0)
-    channel = st.selectbox("Channel", channels)
-    product = st.selectbox("Product", products)
+    state = st.selectbox("State", states, index=states.index("AL") if "AL" in states else 0)
+    channel = st.selectbox("Channel", channels, index=channels.index("DIGITAL") if "DIGITAL" in channels else 0)
+    product = st.selectbox("Product", products, index=products.index("ILP") if "ILP" in products else 0)
 
     st.divider()
     st.markdown(

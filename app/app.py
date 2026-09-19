@@ -20,9 +20,9 @@ st.caption(
 
 with st.sidebar:
     st.header("Lane filters")
-    states = st.multiselect("State", sorted(df["State"].unique()), default=["CA"])
-    channels = st.multiselect("Channel", sorted(df["Channel"].unique()), default=list(sorted(df["Channel"].unique())))
-    products = st.multiselect("Product", sorted(df["Product"].unique()), default=list(sorted(df["Product"].unique())))
+    states = st.multiselect("State", sorted(df["State"].unique()), default=["AL"])
+    channels = st.multiselect("Channel", sorted(df["Channel"].unique()), default=["DIGITAL"])
+    products = st.multiselect("Product", sorted(df["Product"].unique()), default=["ILP"])
 
 if not states or not channels or not products:
     st.warning("Select at least one State, Channel, and Product in the sidebar.")
