@@ -24,9 +24,7 @@ df = st.cache_data(load_data)()
 
 st.title("Lane Chart")
 st.caption(
-    "Pick one State, Channel, and Product to see that lane's full history and forecast, "
-    "the way the workbook's own Lane Chart sheet does — with two of its known display bugs fixed "
-    "(see the notes in the sidebar)."
+    "Pick one State, Channel, and Product to see that lane's full history and forecast."
 )
 
 states = sorted(df["State"].unique())
@@ -38,13 +36,6 @@ with st.sidebar:
     state = st.selectbox("State", states, index=states.index("AL") if "AL" in states else 0)
     channel = st.selectbox("Channel", channels, index=channels.index("DIGITAL") if "DIGITAL" in channels else 0)
     product = st.selectbox("Product", products, index=products.index("ILP") if "ILP" in products else 0)
-
-    st.divider()
-    st.markdown(
-        "**Fixed vs. the workbook:**\n"
-        "- Zero-volume months are plotted as 0, not hidden as gaps.\n"
-        "- One mislabeled Data Type cell (LA/PHYSICAL/ILP, Oct 2027) is corrected from the date."
-    )
 
 lane_df = df[(df["State"] == state) & (df["Channel"] == channel) & (df["Product"] == product)].sort_values("Date")
 
