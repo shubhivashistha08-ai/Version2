@@ -16,7 +16,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from lib import DASH, load_data
+from lib import COLOR, DASH, load_data
 
 st.set_page_config(page_title="Lane Chart", layout="wide")
 
@@ -59,7 +59,7 @@ for data_type, width in [("Historical", 2.5), ("Forecast", 2.5)]:
             y=seg["Volume"],
             mode="lines+markers",
             name=data_type,
-            line=dict(dash=DASH[data_type], width=width),
+            line=dict(dash=DASH[data_type], width=width, color=COLOR[data_type]),
             hovertemplate="%{x|%b %Y}<br>%{y:,.2f}<extra>" + data_type + "</extra>",
         )
     )
