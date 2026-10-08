@@ -1,0 +1,5 @@
+__pycache__/
+
+# Client data — never commit while this repo is public.
+data/source/
+data/scenario_baseline.csv
